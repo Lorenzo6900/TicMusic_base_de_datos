@@ -1,0 +1,19 @@
+{
+  "name": "ticmusic_base_de_datos",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lorenzo6900/TicMusic_base_de_datos.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lorenzo6900/TicMusic_base_de_datos/issues"
+  },
+  "homepage": "https://github.com/Lorenzo6900/TicMusic_base_de_datos#readme",
+  "description": ""
+}
