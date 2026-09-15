@@ -16,3 +16,10 @@ app.get("/", (_, res) => {
 
 // Usuario
 app.put("usuario:id", usuario.crearusuario);
+app.post("/login", usuario.login);
+
+const server = app.listen(port, () => {
+  console.log(`TicMusic listening at http://localhost:${port}`);
+});
+
+export { app, server };
