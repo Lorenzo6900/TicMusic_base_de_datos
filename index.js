@@ -17,7 +17,7 @@ app.get("/", (_, res) => {
 // Usuario
 app.post("/usuario", usuario.crearusuario);
 app.post("/login", usuario.login);
-app.get("/escucha", usuario.escucha);
+app.put("/escucha", usuario.escucha);
 
 const server = app.listen(port, () => {
   console.log(`TicMusic listening at http://localhost:${port}`);

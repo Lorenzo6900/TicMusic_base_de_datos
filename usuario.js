@@ -52,7 +52,7 @@ const escucha = async (req, res) => {
     const { token } = req.body;
     const decoded = jwt.verify(token, 'mi_clave_secreta');
     const userid = decoded.userid;
-    await query("SELECT * FROM reproducciones WHERE userid = $1", [token]);
+    await query("SELECT * FROM usuario WHERE userid = $1", [userid]);
     res.status(201).json({ userid });
 };
 
