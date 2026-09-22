@@ -1,22 +1,22 @@
-import { query } from "../db.js";
+import { query } from "./db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 /**
- * Crea un nuevo artista.
- * @param {import('express').Request} req - Body: { nombre: string }
+ * Crea un nuevo usuario.
+ * @param {import('express').Request} req 
  * @param {import('express').Response} res
  */
 const crearusuario = async (req, res) => {
     const { userid, nombre, password } = req.body;
-     const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
     await query("INSERT INTO usuario (userid, nombre, password) VALUES ($1, $2, $3)", [userid, nombre, passwordHash]);
     res.status(201).json({ userid, nombre });
 };
 
 /**
- * Crea un nuevo artista.
- * @param {import('express').Request} req - Body: { nombre: string }
+ * Hace un login.
+ * @param {import('express').Request} req 
  * @param {import('express').Response} res
  */
 const login = async (req, res) => {
@@ -42,9 +42,24 @@ const login = async (req, res) => {
     res.json({ token });
 };
 
+
+/**
+ * Crea un nuevo usuario.
+ * @param {import('express').Request} req 
+ * @param {import('express').Response} res
+ */
+const escucha = async (req, res) => {
+    const { token } = req.body;
+    const decoded = jwt.verify(token, 'mi_clave_secreta');
+    const userid = decoded.userid;
+    await query("SELECT * FROM reproducciones WHERE userid = $1", [token]);
+    res.status(201).json({ userid });
+};
+
 const usuario = {
     crearusuario,
-    login
+    login,
+    escucha
 };
 
 export default usuario;
