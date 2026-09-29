@@ -49,11 +49,19 @@ const login = async (req, res) => {
  * @param {import('express').Response} res
  */
 const escucha = async (req, res) => {
+    try {
     const { token } = req.body;
+    if (!token) {
+        return res.status(400).json({ mensaje: "Token no proporcionado" });
+    }
     const decoded = jwt.verify(token, 'mi_clave_secreta');
     const userid = decoded.userid;
     await query("SELECT * FROM usuario WHERE userid = $1", [userid]);
     res.status(201).json({ userid });
+    } catch (error) {
+        // Si jwt.verify falla, entra a este catch evitando que caiga la aplicación
+        return res.status(401).json({ mensaje: "Token incorrecto o expirado" });
+    }
 };
 
 const usuario = {
