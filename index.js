@@ -1,6 +1,6 @@
 import express from "express";
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 
 import usuario from "./usuario.js";
@@ -19,8 +19,10 @@ app.post("/usuario", usuario.crearusuario);
 app.post("/login", usuario.login);
 app.put("/escucha", usuario.escucha);
 
-const server = app.listen(port, () => {
-  console.log(`TicMusic listening at http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`TicMusic listening at http://localhost:${port}`);
+  });
+}
 
-export { app, server };
+export default app;
