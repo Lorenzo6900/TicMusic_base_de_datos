@@ -1,6 +1,7 @@
 {
   "name": "ticmusic_base_de_datos",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

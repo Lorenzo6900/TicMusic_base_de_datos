@@ -1,5 +1,5 @@
 import express from 'express';
-import { verifyToken, verifyAdmin } from './middlewares/auth.js';
+import { verifyToken, verifyAdmin } from '../middlewares/auth.js';
 
 const router = express.Router();
 

@@ -64,10 +64,65 @@ const escucha = async (req, res) => {
     }
 };
 
+
+/**
+ * Crea una cancion
+ * @param {import('express').Request} req 
+ * @param {import('express').Response} res
+ */
+const CrearCancion = async (req, res) => {
+    const { nombre } = req.body;
+    await query("INSERT INTO cancion (nombre) VALUES ($1)", [nombre]);
+    res.status(201).json({ nombre });
+};
+
+/**
+ * Actualiza datos de una cancion 
+ * @param {import('express').Request} req 
+ * @param {import('express').Response} res
+ */
+const CambiarNombre = async (req, res) => {
+    const { nombre, id } = req.body;
+    await query("update cancion set nombre = $1 where id = $2", [nombre, id]);
+    res.status(201).json({ nombre, id });
+};
+
+/**
+ * Borrar cancion
+ * @param {import('express').Request} req 
+ * @param {import('express').Response} res
+ */
+const BorraCancion = async (req, res) => {
+    const { id } = req.body;
+    await query("delete from cancion where id = $1", [id]);
+    res.status(201).json({ id });
+};
+
+/**
+ * Borrar cancion
+ * @param {import('express').Request} req 
+ * @param {import('express').Response} res
+ */
+const escucho = async (req, res) => {
+    const { id } = req.body;
+    const usuario_id = req.user ? (req.user.id || req.user.id_usuario) : null;
+
+    if (!usuario_id) {
+        return res.status(401).json({ mensaje: "No se pudo identificar al usuario desde el token." });
+    }
+
+    await query("insert into escucha (id_usuario, id_cancion) values ($1, $2)", [usuario_id, id]);
+    res.status(201).json({ id });
+};
+
 const usuario = {
     crearusuario,
     login,
-    escucha
+    escucha,
+    CrearCancion,
+    CambiarNombre,
+    BorraCancion,
+    escucho
 };
 
 export default usuario;
