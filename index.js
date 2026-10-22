@@ -7,8 +7,10 @@ const port = process.env.PORT || 3000;
 
 
 app.use(express.json());
-app.use('/auth', auth);
-app.use('/api', auth);
+app.use('/auth', authRutas);
+app.use('/api', authRutas);
+app.use('/usuario',usuarioRutas);
+
 
 app.get("/", (_, res) => {
   res.send("Lendaa working!");

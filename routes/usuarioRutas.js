@@ -1,13 +1,12 @@
 import usuario from "../controllers/usuario.js";
 import { Router } from "express";
 import { verifyToken, verifyAdmin } from "../middlewares/auth.js"
-import { verify } from "jsonwebtoken";
 
 const usuarioRutas = Router();
 /* ------------------- Rutas ------------------- */
 
 // Usuario
-usuarioRutas.post("/usuario", usuario.crearusuario);
+usuarioRutas.post("/", usuario.crearusuario);
 usuarioRutas.post("/login", usuario.login);
 usuarioRutas.put("/escucha", usuario.escucha);
 

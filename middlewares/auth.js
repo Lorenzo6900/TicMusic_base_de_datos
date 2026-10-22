@@ -1,4 +1,4 @@
-import jwt from 'jasonwebtoken';
+import jwt from 'jsonwebtoken';
 const secret = process.env.JWT_SECRET || 'tu_clave_secreta';
 
 export const verifyToken = async (req, res, next) => {
@@ -6,7 +6,7 @@ export const verifyToken = async (req, res, next) => {
     if (!authHeader){
         return res.status(401).send({error: "no llego ningun token en los headers"});
     }
-    const token = authHeader.split('')[1];
+    const token = authHeader.split(' ')[1];
     try {
         const payload = jwt.verify(token, secret);
         req.user_id = payload.id; //modifica rez, agrega user id q viene del token.
