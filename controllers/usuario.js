@@ -1,6 +1,7 @@
 import { query } from "../config/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { secret } from "../middlewares/auth.js";
 
 /**
  * Crea un nuevo usuario.
@@ -36,8 +37,8 @@ const login = async (req, res) => {
     
     if (!passwordCorrecto) {return res.status(401).json({error: "Usuario o contraseña incorrectos"});}
 
-    const token = jwt.sign({userid: usuarioEncontrado.userid},
-    "mi_clave_secreta",
+    const token = jwt.sign({userid: usuarioEncontrado.userid, rol: usuarioEncontrado.rol},
+    secret,
     {expiresIn: "1h"});
     res.json({ token });
 };
@@ -54,7 +55,7 @@ const escucha = async (req, res) => {
     if (!token) {
         return res.status(400).json({ mensaje: "Token no proporcionado" });
     }
-    const decoded = jwt.verify(token, 'mi_clave_secreta');
+    const decoded = jwt.verify(token, secret);
     const userid = decoded.userid;
     await query("SELECT * FROM usuario WHERE userid = $1", [userid]);
     res.status(201).json({ userid });
@@ -105,13 +106,25 @@ const BorraCancion = async (req, res) => {
  */
 const escucho = async (req, res) => {
     const { id } = req.body;
-    const usuario_id = req.user ? (req.user.id || req.user.id_usuario) : null;
+    const usuario_id = req.user?.userid;
 
     if (!usuario_id) {
         return res.status(401).json({ mensaje: "No se pudo identificar al usuario desde el token." });
     }
 
-    await query("insert into escucha (id_usuario, id_cancion) values ($1, $2)", [usuario_id, id]);
+    await query("insert into escucha (usuario_id, cancion_id) values ($1, $2)", [usuario_id, id]);
+        // Cuento cuántas canciones distintas escuchó este usuario
+    const resultado = await query(
+        "select count(distinct cancion_id) as cantidad from escucha where usuario_id = $1",
+        [usuario_id]
+    );
+    const cantidad = Number(resultado.rows[0].cantidad);
+
+    // Si escuchó más de 10, lo marco como fan
+    if (cantidad > 10) {
+        await query("update usuario set fan = true where userid = $1", [usuario_id]);
+    }
+
     res.status(201).json({ id });
 };
 

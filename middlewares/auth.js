@@ -1,15 +1,17 @@
 import jwt from 'jsonwebtoken';
-const secret = process.env.JWT_SECRET || 'tu_clave_secreta';
+
+// Una sola clave secreta para firmar (login) y verificar (middleware) los tokens.
+export const secret = process.env.JWT_SECRET || 'mi_clave_secreta';
 
 export const verifyToken = async (req, res, next) => {
-    const authHeader = req.headers ['authorization'];
+    const authHeader = req.headers['authorization'];
     if (!authHeader){
         return res.status(401).send({error: "no llego ningun token en los headers"});
     }
     const token = authHeader.split(' ')[1];
     try {
         const payload = jwt.verify(token, secret);
-        req.user_id = payload.id; //modifica rez, agrega user id q viene del token.
+        req.user = payload; // guarda los datos del token (userid y rol) en req.user
         next();// pasa al proximo middleware
 
     } catch (err) {
@@ -20,7 +22,7 @@ export const verifyToken = async (req, res, next) => {
 
 export const verifyAdmin = async (req, res, next) => {
     try{
-        if (req.user_role !== 'A') {
+        if (req.user?.rol?.trim() !== 'A') {
             return res.status(403).send({ error: "Acceso denegado: requiere rol de administrador" });
     }
     next();
